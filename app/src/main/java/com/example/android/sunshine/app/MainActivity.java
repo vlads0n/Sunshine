@@ -1,13 +1,11 @@
 package com.example.android.sunshine.app;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.view.*;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -60,14 +58,20 @@ public class MainActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            ArrayList<String> list = new ArrayList<>();
-            list.add("Today - Sunny - 88/63");
-            list.add("Tomorrow - Foggy - 80/57");
-            list.add("Wednesday - Cloudy - 75/50");
-            list.add("Thursday - Rainy - 70/53");
-            list.add("Friday - Foggy - 70/46");
-            list.add("Saturday - Sunny - 85/66");
-            list.add("Sunday - Sunny - 90/70");
+            ArrayList<String> weekForecast = new ArrayList<>();
+            weekForecast.add("Today - Sunny - 88/63");
+            weekForecast.add("Tomorrow - Foggy - 80/57");
+            weekForecast.add("Wednesday - Cloudy - 75/50");
+            weekForecast.add("Thursday - Rainy - 70/53");
+            weekForecast.add("Friday - Foggy - 70/46");
+            weekForecast.add("Saturday - Sunny - 85/66");
+            weekForecast.add("Sunday - Sunny - 90/70");
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>
+                    (getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+
+            ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
+            listView.setAdapter(adapter);
 
             return rootView;
         }

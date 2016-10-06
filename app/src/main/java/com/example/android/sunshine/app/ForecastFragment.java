@@ -26,6 +26,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment {
+    private ArrayAdapter<String> adapter;
 
     public ForecastFragment() {
     }
@@ -66,7 +67,7 @@ public class ForecastFragment extends Fragment {
         weekForecast.add("Saturday - Sunny - 85/66");
         weekForecast.add("Sunday - Sunny - 90/70");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>
+        adapter = new ArrayAdapter<>
                 (getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -170,11 +171,7 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
             return resultStrs;
-
         }
 
         @Override
@@ -216,7 +213,6 @@ public class ForecastFragment extends Fragment {
 
                 URL url = new URL(uri.toString());
 
-                Log.v(LOG_TAG, "Built url: " + uri.toString());
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -272,6 +268,15 @@ public class ForecastFragment extends Fragment {
             }
             // This will only happen if there was an error getting or parsing the forecast.
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            if (strings != null) {
+                adapter.clear();
+                for (String string: strings)
+                    adapter.add(string);
+            }
         }
     }
 }

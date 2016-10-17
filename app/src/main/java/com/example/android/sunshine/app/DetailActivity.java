@@ -19,7 +19,10 @@ package com.example.android.sunshine.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 
@@ -65,8 +68,12 @@ public class DetailActivity extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class DetailFragment extends Fragment {
+        private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+        private static final String FORECAST_SHARE_HASHTAG = "#SunshineApp";
+        private String forecastString;
 
         public DetailFragment() {
+            setHasOptionsMenu(true);
         }
 
         @Override
@@ -77,12 +84,35 @@ public class DetailActivity extends ActionBarActivity {
 
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                String message = intent.getStringExtra(Intent.EXTRA_TEXT);
+                forecastString = intent.getStringExtra(Intent.EXTRA_TEXT);
                 TextView textView = (TextView) rootView.findViewById(R.id.detail_text_view);
-                textView.setText(message);
+                textView.setText(forecastString);
             }
 
             return rootView;
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            inflater.inflate(R.menu.detailfragment, menu);
+
+            MenuItem menuItem = menu.findItem(R.id.action_share);
+
+            ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+            if(shareActionProvider != null)
+                shareActionProvider.setShareIntent(createShareForecastIntent());
+            else
+                Log.d(LOG_TAG, "Share Action Provider is null");
+        }
+
+        private Intent createShareForecastIntent() {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    forecastString + FORECAST_SHARE_HASHTAG);
+            return shareIntent;
         }
     }
 }
